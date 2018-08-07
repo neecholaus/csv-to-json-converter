@@ -57,6 +57,9 @@ except:
 	exit()
 
 
+if bad > 0:
+	print 'There were %s rows with an inaccurate number of columns. We skipped those rows.' %(bad)
+
 print 'JSON was successfully saved to %s' %(new_file_name)
 
 
