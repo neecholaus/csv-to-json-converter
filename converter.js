@@ -39,15 +39,18 @@ fs.readFile(file_name, 'utf8', (error, res) => {
 	let rows = [];
 	for(i = 0; i < data_array.length; i++) {
 		// Fix more than one sequential comma
-		data_array[i].split(',,').join(', ,');
+		data_array[i] = data_array[i].replace(/,((?!")(?! ))/g, '," "');
 
-		data_array[i] = data_array[i].split(',');
+		data_array[i] = data_array[i].replace(/(?<="),/g, '^^^');
+
+		data_array[i] = data_array[i].split('^^^');
 
 		let object = {};
 
 		for(j = 0; j < data_array[i].length; j++) {
 			object[headers_array[j]] = data_array[i][j];
 		}
+		console.log(data_array[i].length, i);
 
 		rows.push(object);
 	}

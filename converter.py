@@ -1,6 +1,7 @@
 import sys
 import json
 import os
+import re
 
 args = sys.argv;
 
@@ -32,17 +33,16 @@ bad = 0
 master = []
 
 for i in range(len(rows_array)):
-	row = rows_array[i].replace(',,', ',"",')
-	split_row = row.split(',')
+	row = re.sub(r',((?!")(?! ))', '," "', rows_array[i])
+
+	row = re.sub(r'(?<="),', '^^^', row)
+
+	split_row = row.split('^^^')
 
 	data = {}
 
-	if len(headers_array) >= len(split_row):
-		for j in range(len(split_row)):
-			data[headers_array[j]] = split_row[j]
-	else:
-		bad += 1
-		continue
+	for j in range(len(split_row)):
+		data[headers_array[j]] = split_row[j]
 
 	master.append(data)
 
@@ -56,9 +56,6 @@ except:
 	print 'Something went wrong. The file was not saved.'
 	exit()
 
-
-if bad > 0:
-	print 'There were %s rows with an inaccurate number of columns. We skipped those rows.' %(bad)
 
 print 'JSON was successfully saved to %s' %(new_file_name)
 
